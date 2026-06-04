@@ -1,12 +1,10 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sleek Creator Pro</title>
-    <!-- Tailwind CSS for sleek dark layout styling -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Lucide Icons Library for Workspace Grid UI elements -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
@@ -18,7 +16,6 @@
 </head>
 <body class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-between">
 
-    <!-- APP HEADER -->
     <div class="flex items-center justify-between border-b border-gray-800 pb-3 mb-4">
         <h1 class="text-lg font-bold tracking-wide text-gray-200 flex items-center gap-2">
             <i data-lucide="zap" class="w-5 h-5 text-blue-500"></i> Sleek Creator Pro
@@ -26,7 +23,6 @@
         <button class="text-gray-400 hover:text-white"><i data-lucide="more-vertical"></i></button>
     </div>
 
-    <!-- ACCOUNT SESSION CARD -->
     <div class="bg-[#111827] border border-gray-800 rounded-xl p-4 mb-5 flex items-center justify-between shadow-lg">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">G</div>
@@ -38,7 +34,6 @@
         <button onclick="clearSavedKey()" class="text-xs text-red-400 font-medium hover:underline">Clear Key</button>
     </div>
 
-    <!-- WORKSPACE MODE SELECTION -->
     <div class="mb-5">
         <h2 class="text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Workspace</h2>
         <div class="grid grid-cols-3 gap-3">
@@ -57,9 +52,7 @@
         </div>
     </div>
 
-    <!-- INPUT PROPERTIES FORM -->
     <div class="bg-[#111827] border border-gray-800 rounded-xl p-4 mb-5 space-y-4 shadow-md">
-        <!-- Gemini Key Input -->
         <div>
             <label class="block text-xs font-semibold text-gray-400 mb-1">Gemini API Key (Auto-Saves)</label>
             <div class="relative">
@@ -71,14 +64,12 @@
             <a href="https://aistudio.google.com/" target="_blank" class="text-[11px] text-blue-400 mt-1 block hover:underline">[see how to get your GOOGLE GEMINI_API_KEY]</a>
         </div>
 
-        <!-- Dynamic Context Box Entry -->
         <div>
             <label id="input-label" class="block text-xs font-semibold text-gray-400 mb-1">YouTube URL / Video ID</label>
             <input type="text" id="input-value" class="w-full bg-[#0b111e] border border-gray-800 rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500" placeholder="https://youtu.be/...">
         </div>
     </div>
 
-    <!-- CORE PROCESSING TOOLS -->
     <div class="mb-5">
         <h2 class="text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Tools</h2>
         <div class="grid grid-cols-3 gap-3">
@@ -97,33 +88,25 @@
         </div>
     </div>
 
-    <!-- CLIP FEED STAGE OUTPUT -->
     <div class="bg-[#111827] border border-gray-800 rounded-xl p-4 mb-6 shadow-md">
         <h2 class="text-xs font-bold text-gray-400 tracking-wider uppercase mb-2">Clip Feed</h2>
         <div class="relative bg-[#0b111e] border border-gray-800 rounded-lg p-4 flex flex-col items-center justify-center min-h-[160px] text-center">
-            <div id="video-preview-btn" class="w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center mb-3 shadow-inner">
-                <i data-lucide="play" class="w-5 h-5 text-gray-300 fill-gray-300 ml-0.5"></i>
-            </div>
             
-            <!-- Result Field Container -->
-            <div id="output-box" class="w-full text-left hidden">
-                <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wide mb-1">Generated Output:</h4>
-                <div id="output-text" class="text-xs text-gray-300 leading-relaxed bg-[#111827] p-2.5 rounded border border-gray-800 max-h-40 overflow-y-auto whitespace-pre-wrap"></div>
+            <div id="clip-feed-status" class="w-full">
+                <div id="video-preview-btn" class="w-12 h-12 mx-auto bg-white/5 border border-white/10 rounded-full flex items-center justify-center mb-3 shadow-inner">
+                    <i data-lucide="play" class="w-5 h-5 text-gray-300 fill-gray-300 ml-0.5"></i>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-200">Prepared Content Asset</h3>
+                <p class="text-xs text-gray-500">Ready to process sequence</p>
             </div>
 
-            <div id="status-placeholder">
-                <h3 class="text-sm font-semibold text-gray-200">Prepared Content Asset</h3>
-                <p id="status-text" class="text-xs text-gray-500">Ready to process sequence</p>
-            </div>
         </div>
     </div>
 
-    <!-- DISPATCH LAUNCH BUTTON -->
     <button onclick="dispatchPipelineTask()" class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white font-semibold py-3.5 rounded-xl text-center cursor-pointer transition shadow-md tracking-wide">
         Process & Upload
     </button>
 
-    <!-- CORE INTERACTION ARCHITECTURE SCRIPT -->
     <script>
         // Default Config Global States
         let currentMode = 'vid';
@@ -216,31 +199,31 @@
             lucide.createIcons();
         }
 
-        // Send workspace bundle package over to the live Render backend api channel
+        // Send data strictly to the Render backend, bypassing client-side API libraries entirely
         async function dispatchPipelineTask() {
             const apiKey = document.getElementById('api-key').value.trim();
             const inputValue = document.getElementById('input-value').value.trim();
-            const statusText = document.getElementById('status-text');
-            const outputBox = document.getElementById('output-box');
-            const outputText = document.getElementById('output-text');
-            const previewBtn = document.getElementById('video-preview-btn');
+            const clipFeed = document.getElementById('clip-feed-status');
 
             if (!apiKey) {
-                alert("Please supply your Gemini API Key first.");
+                alert("Please enter your Gemini API Key first.");
                 return;
             }
             if (!inputValue) {
-                alert("Please supply an input asset content url or text framework.");
+                alert("Please enter an input URL or script text.");
                 return;
             }
 
-            statusText.innerText = "Processing pipeline request active... please wait...";
-            statusText.classList.remove('text-gray-500');
-            statusText.classList.add('text-blue-400', 'animate-pulse');
-            outputBox.classList.add('hidden');
+            // Set loading status inside the Clip Feed dashboard card
+            if (clipFeed) {
+                clipFeed.innerHTML = `
+                    <h3 class="text-sm font-semibold text-blue-400 animate-pulse">Processing pipeline request active...</h3>
+                    <p class="text-xs text-gray-500 mt-1">Talking to backend cloud cluster server...</p>
+                `;
+            }
 
             try {
-                // Connected directly to your live production server cluster address URL on Render
+                // Network call strictly targeting your Render backend API service endpoint
                 const response = await fetch('https://shotify-x6x8.onrender.com/api/process', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -254,29 +237,32 @@
 
                 const dataset = await response.json();
 
-                statusText.classList.remove('animate-pulse');
                 if (response.ok) {
-                    statusText.innerText = "Sequence execution finalized successfully.";
-                    statusText.className = "text-xs text-green-400 font-medium";
-                    previewBtn.classList.add('hidden');
-                    outputBox.classList.remove('hidden');
-                    outputText.innerText = dataset.result;
+                    // Update layout on successful return string mapping
+                    if (clipFeed) {
+                        clipFeed.innerHTML = `
+                            <div class="w-full text-left">
+                                <h4 class="text-xs font-bold text-green-400 uppercase tracking-wide mb-1">✓ Sequence Finalized:</h4>
+                                <div class="text-xs text-gray-300 leading-relaxed bg-[#111827] p-2.5 rounded border border-gray-800 max-h-48 overflow-y-auto whitespace-pre-wrap">${dataset.result}</div>
+                            </div>
+                        `;
+                    }
                 } else {
-                    statusText.innerText = "Task failure error found.";
-                    statusText.className = "text-xs text-red-400 font-medium";
-                    alert("Error: " + (dataset.error || "Internal operation glitch"));
+                    throw new Error(dataset.error || "Internal cloud operation error");
                 }
             } catch (err) {
-                statusText.innerText = "Network fetch process connection broke.";
-                statusText.className = "text-xs text-red-400 font-medium";
-                statusText.classList.remove('animate-pulse');
-                alert("Error running task: " + err.message);
+                alert("Task execution failed: " + err.message);
+                if (clipFeed) {
+                    clipFeed.innerHTML = `
+                        <h3 class="text-sm font-semibold text-red-400">Task Failure Error Found</h3>
+                        <p class="text-xs text-gray-500 mt-1">${err.message}</p>
+                    `;
+                }
             }
         }
 
-        // Initialize Icons Engine on view render load sequence
+        // Initialize UI Graphic Components
         lucide.createIcons();
     </script>
 </body>
 </html>
-          
