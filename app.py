@@ -4,7 +4,10 @@ from flask_cors import CORS
 import google.generativeai as genai
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)  # Allows your GitHub Pages frontend to communicate with Render
+
+# Force the SDK to use the stable v1 API globally, bypassing the broken v1beta
+os.environ["ANALYTICS_VERSION"] = "v1" 
 
 @app.route('/api/process', methods=['POST'])
 def process_data():
@@ -18,10 +21,10 @@ def process_data():
         if not api_key or not input_value:
             return jsonify({'error': 'Missing required fields'}), 400
 
-        # This configures your specific API key dynamically
+        # Configure the library directly with the incoming key
         genai.configure(api_key=api_key)
 
-        # CALLING THE NEW STABLE API MODEL (Fixes the 404 version error)
+        # Call the stable model 
         model = genai.GenerativeModel('gemini-1.5-flash')
         
         prompt = f"Act as a content creation assistant. Tool: {tool}. Mode: {mode}. Input: {input_value}"
