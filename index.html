@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,7 +35,7 @@
                 <p class="text-xs text-gray-400">Session Remembered</p>
             </div>
         </div>
-        <button class="text-xs text-red-400 font-medium hover:underline">Sign Out</button>
+        <button onclick="clearSavedKey()" class="text-xs text-red-400 font-medium hover:underline">Clear Key</button>
     </div>
 
     <!-- WORKSPACE MODE SELECTION -->
@@ -61,9 +61,9 @@
     <div class="bg-[#111827] border border-gray-800 rounded-xl p-4 mb-5 space-y-4 shadow-md">
         <!-- Gemini Key Input -->
         <div>
-            <label class="block text-xs font-semibold text-gray-400 mb-1">Gemini API Key</label>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Gemini API Key (Auto-Saves)</label>
             <div class="relative">
-                <input type="password" id="api-key" class="w-full bg-[#0b111e] border border-gray-800 rounded-lg py-2 pl-3 pr-10 text-sm focus:outline-none focus:border-blue-500 tracking-wider" placeholder="••••••••••••••••••••••••••••••••">
+                <input type="password" id="api-key" oninput="saveKeyAutomatically()" class="w-full bg-[#0b111e] border border-gray-800 rounded-lg py-2 pl-3 pr-10 text-sm focus:outline-none focus:border-blue-500 tracking-wider" placeholder="••••••••••••••••••••••••••••••••">
                 <button onclick="toggleKeyVisibility()" class="absolute right-3 top-2.5 text-gray-500 hover:text-gray-300">
                     <i id="eye-icon" data-lucide="eye" class="w-4 h-4"></i>
                 </button>
@@ -128,6 +128,27 @@
         // Default Config Global States
         let currentMode = 'vid';
         let currentTool = 'repurpose';
+
+        // Load saved API key on page load startup
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('api-key').value = savedKey;
+            }
+        });
+
+        // Save key to phone storage as the user types
+        function saveKeyAutomatically() {
+            const keyVal = document.getElementById('api-key').value.trim();
+            localStorage.setItem('gemini_api_key', keyVal);
+        }
+
+        // Wipe the saved key out if they want to reset it
+        function clearSavedKey() {
+            localStorage.removeItem('gemini_api_key');
+            document.getElementById('api-key').value = '';
+            alert("Saved Gemini API Key has been cleared.");
+        }
 
         // Toggle Key Input mask behavior
         function toggleKeyVisibility() {
@@ -205,7 +226,7 @@
             const previewBtn = document.getElementById('video-preview-btn');
 
             if (!apiKey) {
-                alert("Please paste your Gemini API Key first.");
+                alert("Please supply your Gemini API Key first.");
                 return;
             }
             if (!inputValue) {
@@ -258,3 +279,4 @@
     </script>
 </body>
 </html>
+          
