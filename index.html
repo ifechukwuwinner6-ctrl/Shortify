@@ -235,10 +235,10 @@
                     })
                 });
 
+                // FIXED: Using .json() instead of .get_json()
                 const dataset = await response.json();
 
                 if (response.ok) {
-                    // Update layout on successful return string mapping
                     if (clipFeed) {
                         clipFeed.innerHTML = `
                             <div class="w-full text-left">
